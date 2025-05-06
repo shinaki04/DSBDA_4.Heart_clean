@@ -1,0 +1,103 @@
+4- Heart.csv- Data cleaning, processing,…
+1)	# import pandas library
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+import matplotlib.pyplot as plt ……………..no o/p
+import seaborn as sns
+from sklearn.preprocessing import LabelEncoder
+from sklearn.metrics import accuracy_score,confusion_matrix
+from sklearn.linear_model import LogisticRegression
+import seaborn as sns
+import matplotlib.pyplot as plt
+2)	# Reading csv file
+df = pd.read_csv("Heart.csv")
+df.head()
+
+Data Cleaning
+
+3)	df = df.drop_duplicates() ………..no o/p
+4)	# Count ,min,max ,etc of each column
+df.describe()
+5)	# Information about each column data
+df.info()
+6)	#Finding null values in each column
+df.isna().sum()
+
+Data Integration
+7)	df.head()
+8)	df.fbs.unique()
+9)	import pandas as pd
+# Create subsets
+subSet1 = df[['age', 'sex']].copy()
+subSet2 = df[['cp', 'thalachh']].copy()
+
+# Add dummy key column for cross join
+subSet1['key'] = 1
+subSet2['key'] = 1
+# Merge on dummy key to simulate cross join
+merged_df = pd.merge(subSet1, subSet2, on='key').drop('key', axis=1)
+# Show result
+print(merged_df.head())
+10)	import pandas as pd
+print(pd.__version__)
+
+ERROR CORRECTING
+11)	df.columns
+12)	def remove_outliers(column):   ………no o/p
+  Q1 = column.quantile(0.25)
+  Q3 = column.quantile(0.75)
+IQR = Q3 - Q1
+ threshold = 1.5 * IQR
+ outlier_mask = (column < Q1 - threshold) | (column > Q3 + threshold)
+ return column[~outlier_mask]
+13)	# Remove outliers for each column using a loop ……no o/p
+col_name = ['cp','thalachh','exng','oldpeak','slp','caa']
+for col in col_name:
+df[col] = remove_outliers(df[col])
+14)	plt.figure(figsize=(10, 6))  # Adjust the figure size if needed
+for col in col_name:
+sns.boxplot(data=df[col])
+plt.title(col)
+plt.show()
+15)	df = df.dropna()
+16)	df.isna().sum()
+17)	df = df.drop('fbs',axis=1)
+18)	# Compute correlations between features and target
+correlations = df.corr()['output'].drop('output')
+# Print correlations
+print("Correlation with the Target:")
+print(correlations)
+print()
+# Plot correlation heatmap
+plt.figure(figsize=(8, 6))
+sns.heatmap(df.corr(), annot=True, cmap='coolwarm')
+plt.title('Correlation Heatmap')
+plt.show()
+
+DATA TRANSFORMATION
+
+19)	from sklearn.preprocessing import StandardScaler
+20)	scaler = StandardScaler()
+21)	x_train_scaled = scaler.fit_transform(x_train)
+x_test_scaled = scaler.transform(x_test)
+
+DATA MODEL BULIDING
+22)	y_train= np.array(y_train).reshape(-1, 1)
+y_test= np.array(y_test).reshape(-1, 1)
+23)	y_train.shape
+24)	model = LogisticRegression()
+model.fit(x_train_scaled, y_train)
+# Make predictions on the test set
+y_pred = model.predict(x_test_scaled)
+# Evaluate the model's accuracy
+accuracy = accuracy_score(y_test, y_pred)
+print("Accuracy:", accuracy)
+25)	#Classification model using Decision Tree
+from sklearn.tree import DecisionTreeClassifier
+tc=DecisionTreeClassifier(criterion='entropy')
+tc.fit(x_train_scaled,y_train)
+y_pred=tc.predict(x_test_scaled)
+
+print("Training Accuracy Score :",accuracy_score(y_pred,y_test))
+print("Training Confusion Matrix:",confusion_matrix(y_pred,y_test))
